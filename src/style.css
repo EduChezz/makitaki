@@ -1,0 +1,7 @@
+/* Identidad visual "Neón nocturno" (SDD sección 10.1), dividida por zonas de la pantalla. */
+@import './styles/base.css';
+@import './styles/topbar.css';
+@import './styles/panels.css';
+@import './styles/overlays.css';
+/* Al final: en celular sobrescribe a los demás. */
+@import './styles/mobile.css';

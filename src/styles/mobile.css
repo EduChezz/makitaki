@@ -1,0 +1,49 @@
+/* Celular en vertical (sección 10.1): panel e indicadores apilados abajo. */
+@media (max-width: 640px) {
+  .brand-mini {
+    font-size: 16px;
+  }
+
+  .chord-panel {
+    flex-direction: column;
+    width: calc(100% - 2 * var(--gutter));
+    gap: 8px;
+  }
+
+  .chord-main {
+    min-width: 0;
+  }
+
+  .roman {
+    font-size: 40px;
+  }
+
+  .chord-name {
+    font-size: 19px;
+  }
+
+  .meters {
+    width: auto;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: center;
+    padding: 10px 14px;
+  }
+
+  .meter {
+    grid-template-columns: auto 1fr;
+  }
+
+  .guide {
+    width: 180px;
+    max-height: calc(100% - 300px);
+  }
+
+  .help-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu {
+    left: var(--gutter);
+    min-width: 0;
+  }
+}

@@ -1,0 +1,109 @@
+/* Barra superior */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(var(--gutter), env(safe-area-inset-top)) var(--gutter) 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.topbar > * {
+  pointer-events: auto;
+}
+
+.brand-mini {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  text-shadow: 0 1px 6px var(--bg);
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.selectors {
+  display: flex;
+  gap: 8px;
+}
+
+.selectors label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.selectors select {
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: var(--gutter);
+  display: grid;
+  gap: 4px;
+  min-width: 240px;
+  padding: 8px;
+}
+
+.menu > button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu > button:hover {
+  background: var(--surface-raised);
+}
+
+#menu-selectors:not(:empty) {
+  padding: 4px 4px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+#menu-selectors .selectors {
+  flex-direction: column;
+}
+
+#menu-selectors .selectors label {
+  justify-content: space-between;
+}
+
+#menu-selectors select {
+  flex: 1;
+  max-width: 150px;
+}
+
+.diagnostics {
+  position: fixed;
+  top: 72px;
+  left: var(--gutter);
+  margin: 0;
+  color: var(--text);
+  font: 12px ui-monospace, monospace;
+  text-shadow: 0 1px 3px var(--bg);
+}
+

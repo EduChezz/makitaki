@@ -1,0 +1,9 @@
+node_modules/
+dist/
+certs/
+# Se generan con `npm run assets`
+public/mediapipe/
+# El SDD describe planes y diseño internos: no va al repositorio público.
+docs/*.pdf
+*.log
+.DS_Store

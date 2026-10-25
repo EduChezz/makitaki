@@ -1,0 +1,30 @@
+{
+  "name": "makitaki",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Instrumento de acordes por gestos para tocar y cantar",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/prepare-mediapipe.mjs",
+    "predev": "npm run assets",
+    "dev": "vite",
+    "predev:phone": "npm run assets",
+    "dev:phone": "vite --mode phone",
+    "prebuild": "npm run assets",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.1.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}

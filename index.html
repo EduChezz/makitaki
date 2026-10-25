@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0B0E14" />
+    <meta name="description" content="Toca acordes con las manos frente a la cámara. Todo ocurre en tu dispositivo." />
+    <title>MakiTaki</title>
+  </head>
+  <body>
+    <canvas id="stage" aria-hidden="true"></canvas>
+    <video id="video" playsinline muted></video>
+
+    <!-- Barra superior -->
+    <header id="topbar" class="topbar" hidden>
+      <div class="brand-mini">Maki<span>Taki</span></div>
+      <div class="top-actions">
+        <div id="topbar-selectors"></div>
+        <button id="guide-toggle" class="chip-button" type="button" aria-pressed="true" aria-controls="guide">
+          Guía
+        </button>
+        <button
+          id="menu-button"
+          class="chip-button icon"
+          type="button"
+          aria-label="Menú"
+          aria-expanded="false"
+          aria-controls="menu"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+      </div>
+      <nav id="menu" class="menu panel" hidden>
+        <div id="menu-selectors"></div>
+        <button type="button" data-action="help">Ayuda</button>
+        <button type="button" data-action="calibrate">Calibrar de nuevo</button>
+        <button id="diagnostics-toggle" type="button" data-action="diagnostics">Diagnóstico: apagado</button>
+        <button type="button" data-action="licenses">Licencias de terceros</button>
+      </nav>
+      <div id="selectors" class="selectors">
+        <label>Tono <select id="key-select"></select></label>
+        <label>Timbre <select id="timbre-select"></select></label>
+      </div>
+    </header>
+
+    <p id="diagnostics" class="diagnostics" hidden></p>
+
+    <!-- Guía de gestos -->
+    <aside id="guide" class="guide panel" aria-label="Guía de gestos" hidden>
+      <h2 class="guide-title">Mano izquierda</h2>
+      <ol id="guide-list" class="guide-list"></ol>
+      <p class="guide-foot">Inclínala hacia afuera para menor</p>
+    </aside>
+
+    <div id="hint" class="hint-toast" role="status" hidden>Muestra las dos manos</div>
+
+    <!-- Panel del acorde e indicadores -->
+    <section id="chord-panel" class="chord-panel" data-mode="silence" aria-live="polite" hidden>
+      <div class="chord-main panel">
+        <span id="chord-roman" class="roman">—</span>
+        <div class="chord-text">
+          <span id="chord-name" class="chord-name">Silencio</span>
+          <span id="chord-detail" class="chord-detail"></span>
+        </div>
+      </div>
+      <div class="meters panel">
+        <div class="meter">
+          <span>Volumen</span>
+          <div class="track"><div id="meter-volume" class="fill"></div></div>
+        </div>
+        <div class="meter">
+          <span>Brillo</span>
+          <div class="track"><div id="meter-brightness" class="fill"></div></div>
+        </div>
+        <span id="meter-octave" class="octave-chip">8va</span>
+      </div>
+    </section>
+
+    <!-- Pantalla de inicio -->
+    <div id="start" class="overlay start">
+      <div class="start-card">
+        <h1 class="logo">Maki<span>Taki</span></h1>
+        <p class="tagline">Toca acordes con las manos frente a la cámara.</p>
+        <button id="start-button" class="button" type="button">Empezar</button>
+        <p id="start-status" class="status" role="status"></p>
+        <p class="privacy">La imagen de la cámara nunca sale de tu dispositivo.</p>
+      </div>
+    </div>
+
+    <!-- Calibración -->
+    <div id="calibration" class="calibration" hidden>
+      <div class="panel">
+        <p id="cal-step-count" class="eyebrow">Paso 1 de 3</p>
+        <h2 id="cal-title" class="panel-title">Manos rectas</h2>
+        <p id="cal-hint" class="hint"></p>
+        <div class="track"><div id="cal-progress" class="fill"></div></div>
+        <p id="cal-error" class="status error" role="alert"></p>
+        <button id="cal-cancel" class="button secondary" type="button">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Ayuda -->
+    <div id="help" class="overlay dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+      <div class="panel dialog">
+        <h2 id="help-title" class="panel-title">Cómo se toca</h2>
+        <div class="help-grid">
+          <section>
+            <h3>Mano izquierda: el acorde</h3>
+            <ul>
+              <li><b>1 a 5 dedos</b>: grados I a V</li>
+              <li><b>Índice + meñique</b>: grado VI</li>
+              <li><b>Índice + meñique + pulgar</b>: grado VII</li>
+              <li><b>Inclinar hacia afuera</b>: acorde menor</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Mano derecha: la expresión</h3>
+            <ul>
+              <li><b>Más arriba</b>: más volumen</li>
+              <li><b>1 dedo</b> básico · <b>2</b> inversión · <b>3</b> séptima · <b>4</b> tensión</li>
+              <li><b>Puño</b>: silencio</li>
+              <li><b>Pulgar</b>: una octava abajo</li>
+              <li><b>Inclinar</b>: sonido más oscuro o más brillante</li>
+            </ul>
+          </section>
+        </div>
+        <h3>Consejos</h3>
+        <ul>
+          <li>Pon las palmas hacia la cámara y separa bien los dedos.</li>
+          <li>Apoya el celular para tener las dos manos libres.</li>
+          <li>Busca buena luz de frente.</li>
+          <li>En iPhone, quita el modo silencio para escuchar el sonido.</li>
+        </ul>
+        <button class="button" type="button" data-close>Entendido</button>
+      </div>
+    </div>
+
+    <!-- Licencias -->
+    <div
+      id="licenses"
+      class="overlay dialog-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="licenses-title"
+      hidden
+    >
+      <div class="panel dialog">
+        <h2 id="licenses-title" class="panel-title">Licencias de terceros</h2>
+        <ul id="licenses-list" class="licenses-list">
+          <li>
+            <b>MediaPipe Tasks Vision</b> y modelo de manos · Google · Apache 2.0
+            <button type="button" class="link-button" data-license="MediaPipe-Apache-2.0.txt">Ver licencia</button>
+          </li>
+          <li>
+            <b>Outfit</b> · The Outfit Project Authors · SIL Open Font License 1.1
+            <button type="button" class="link-button" data-license="Outfit-OFL.txt">Ver licencia</button>
+          </li>
+          <li>
+            <b>Orbitron</b> · The Orbitron Project Authors · SIL Open Font License 1.1
+            <button type="button" class="link-button" data-license="Orbitron-OFL.txt">Ver licencia</button>
+          </li>
+        </ul>
+        <p class="hint">Inspirado en Gesture Synth de Eric Wei. Código, sonidos y diseño propios.</p>
+        <pre id="license-text" class="license-text" hidden></pre>
+        <button class="button" type="button" data-close>Cerrar</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

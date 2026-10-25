@@ -1,0 +1,200 @@
+/* Identidad visual "Neón nocturno" (SDD sección 10.1). Fuentes servidas desde el propio proyecto. */
+@font-face {
+  font-family: Outfit;
+  src: url('/fonts/Outfit.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Orbitron;
+  src: url('/fonts/Orbitron.ttf') format('truetype');
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root {
+  --brand-0: #8cf5ee;
+  --brand-1: #3de6da;
+  --brand-2: #00c2b5;
+  --brand-3: #00897f;
+  --brand-4: #0b3d3a;
+  --bg: #0b0e14;
+  --surface: #141a24;
+  --surface-raised: #1e2633;
+  --border: #2a3446;
+  --text: #f2f7ff;
+  --text-muted: #a9b4c6;
+  --text-on-brand: #04201e;
+  --major: #ffb84d;
+  --minor: #7c6cff;
+  --error: #ff5c8a;
+  --font-ui: Outfit, system-ui, sans-serif;
+  --font-display: Orbitron, var(--font-ui);
+  --gutter: 16px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-1);
+  outline-offset: 2px;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#video {
+  display: none;
+}
+
+/* Piezas comunes */
+.panel {
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 14px 18px;
+  backdrop-filter: blur(6px);
+}
+
+.button {
+  min-height: 44px;
+  padding: 12px 32px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--brand-2);
+  color: var(--text-on-brand);
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Presionado brilla en lugar de oscurecerse: sobre marca 3 el texto no llega a 4,5:1 (WCAG). */
+.button:active {
+  background: var(--brand-1);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.button.secondary {
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.chip-button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chip-button[aria-pressed='true'],
+.chip-button[aria-expanded='true'] {
+  border-color: var(--brand-2);
+  color: var(--brand-0);
+}
+
+.chip-button.icon {
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+
+.chip-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.link-button {
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--brand-1);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  width: 0;
+  background: var(--brand-2);
+  transition: width 80ms linear;
+}
+
+.status {
+  min-height: 1.5em;
+  margin: 16px 0 0;
+  color: var(--text-muted);
+}
+
+.status.error {
+  color: var(--error);
+}
+
+.panel-title {
+  margin: 4px 0 8px;
+  font-size: 22px;
+}
+
+.hint {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+}
+

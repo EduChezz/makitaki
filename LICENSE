@@ -1,0 +1,17 @@
+Copyright (c) 2026 Eduardo Sanchez. Todos los derechos reservados.
+Copyright (c) 2026 Eduardo Sanchez. All rights reserved.
+
+El código de este repositorio se publica solo para que se pueda ver. No se
+concede ningún permiso para copiarlo, modificarlo, distribuirlo, publicarlo
+ni usarlo con fines comerciales sin autorización escrita del autor.
+
+The source code in this repository is published for viewing only. No
+permission is granted to copy, modify, distribute, publish, or use it for
+commercial purposes without the author's written permission.
+
+Componentes de terceros (con su propia licencia, incluida en public/licenses/):
+Third-party components (under their own licenses, included in public/licenses/):
+
+- MediaPipe Tasks Vision y modelo de manos — Google — Apache License 2.0
+- Outfit — The Outfit Project Authors — SIL Open Font License 1.1
+- Orbitron — The Orbitron Project Authors — SIL Open Font License 1.1
