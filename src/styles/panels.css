@@ -98,7 +98,10 @@
   background: var(--surface-raised);
   border: 1px solid var(--border);
   font-weight: 600;
-  white-space: nowrap;
+  /* Una línea si cabe; si no, se parte sin salirse de la pantalla. */
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--gutter));
+  text-align: center;
   z-index: 1;
 }
 

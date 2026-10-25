@@ -33,6 +33,7 @@ Cada cambio en `main` se publica solo en GitHub Pages con [.github/workflows/dep
 - [x] Fase 3: sonido (MusicTheory, SynthEngine con 4 voces, glide y 3 timbres)
 - [x] Fase 4: interfaz (panel del acorde, guía, anillo con partículas, ayuda, licencias, diseño en celular)
 - [x] Fase 5: errores (aviso de poca luz), pantalla siempre encendida, publicación — faltan pruebas en iPhone
+- [x] Filtros de imagen (Neón, Verano, Natural, Blanco y negro) y grabación de video con instrumento y voz
 - [ ] Ajustes finales con la cámara real
 
 ## Licencia

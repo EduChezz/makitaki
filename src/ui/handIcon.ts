@@ -17,11 +17,19 @@ function bar(x: number, y: number, w: number, h: number, up: boolean, extra = ''
   return `<rect class="${up ? 'up' : 'down'}" x="${x}" y="${y}" width="${w}" height="${h}" rx="3"${extra}/>`;
 }
 
+/** Colores para usar el dibujo como imagen (fuera de la página no se aplica el CSS). */
+export interface HandPaint {
+  palm: string;
+  stroke: string;
+  up: string;
+  down: string;
+}
+
 /**
  * SVG de la mano para un código pulgar · índice · medio · anular · meñique.
  * `side` indica qué mano: la izquierda se dibuja reflejada (pulgar a la derecha).
  */
-export function handIcon(code: string, side: 'left' | 'right'): string {
+export function handIcon(code: string, side: 'left' | 'right', paint?: HandPaint): string {
   const up = [...code].map((c) => c === '1');
   // Pulgar levantado: sale en diagonal desde la palma. Doblado: cruza la palma.
   const thumb = up[0]
@@ -32,9 +40,13 @@ export function handIcon(code: string, side: 'left' | 'right'): string {
   ).join('');
   const flip = side === 'left' ? ' transform="translate(48 0) scale(-1 1)"' : '';
   const raised = up.filter(Boolean).length;
+  const style = paint
+    ? `<style>.palm{fill:${paint.palm};stroke:${paint.stroke};stroke-width:1.5}` +
+      `.up{fill:${paint.up}}.down{fill:${paint.down};opacity:.35}</style>`
+    : '';
   return (
-    `<svg class="hand-icon" viewBox="0 0 48 56" role="img" ` +
+    `<svg xmlns="http://www.w3.org/2000/svg" class="hand-icon" viewBox="0 0 48 56" role="img" ` +
     `aria-label="Mano ${side === 'left' ? 'izquierda' : 'derecha'}, ${raised} dedos levantados">` +
-    `<g${flip}><rect class="palm" x="12" y="${PALM_TOP}" width="30" height="26" rx="10"/>${thumb}${fingers}</g></svg>`
+    `${style}<g${flip}><rect class="palm" x="12" y="${PALM_TOP}" width="30" height="26" rx="10"/>${thumb}${fingers}</g></svg>`
   );
 }

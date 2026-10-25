@@ -20,6 +20,10 @@
       <div class="brand-mini">Maki<span>Taki</span></div>
       <div class="top-actions">
         <div id="topbar-selectors"></div>
+        <button id="record-button" class="chip-button record-button" type="button" aria-label="Grabar">
+          <span class="rec-dot" aria-hidden="true"></span>
+          <span id="record-label">Grabar</span>
+        </button>
         <button id="guide-toggle" class="chip-button" type="button" aria-pressed="true" aria-controls="guide">
           Guía
         </button>
@@ -44,6 +48,7 @@
       <div id="selectors" class="selectors">
         <label>Tono <select id="key-select"></select></label>
         <label>Timbre <select id="timbre-select"></select></label>
+        <label>Filtro <select id="filter-select"></select></label>
       </div>
     </header>
 
@@ -134,6 +139,10 @@
           <li>Apoya el celular para tener las dos manos libres.</li>
           <li>Busca buena luz de frente.</li>
           <li>En iPhone, quita el modo silencio para escuchar el sonido.</li>
+          <li>
+            <b>Grabar</b> guarda la imagen, el instrumento y tu voz. Con audífonos tu voz se graba más limpia, sin el
+            eco del parlante.
+          </li>
         </ul>
         <button class="button" type="button" data-close>Entendido</button>
       </div>
@@ -167,6 +176,28 @@
         <p class="hint">Inspirado en Gesture Synth de Eric Wei. Código, sonidos y diseño propios.</p>
         <pre id="license-text" class="license-text" hidden></pre>
         <button class="button" type="button" data-close>Cerrar</button>
+      </div>
+    </div>
+
+    <!-- Resultado de la grabación -->
+    <div
+      id="recording-result"
+      class="overlay dialog-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rec-title"
+      hidden
+    >
+      <div class="panel dialog">
+        <h2 id="rec-title" class="panel-title">Tu video</h2>
+        <p id="rec-info" class="hint"></p>
+        <video id="rec-preview" class="rec-preview" controls playsinline></video>
+        <p class="hint">El video está solo en tu dispositivo hasta que lo guardes o lo compartas.</p>
+        <div class="dialog-actions">
+          <button id="rec-share" class="button" type="button">Compartir</button>
+          <a id="rec-download" class="button secondary" href="#" download>Guardar</a>
+          <button id="rec-discard" class="button secondary" type="button">Cerrar</button>
+        </div>
       </div>
     </div>
 

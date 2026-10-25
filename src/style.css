@@ -3,5 +3,6 @@
 @import './styles/topbar.css';
 @import './styles/panels.css';
 @import './styles/overlays.css';
+@import './styles/recording.css';
 /* Al final: en celular sobrescribe a los demás. */
 @import './styles/mobile.css';

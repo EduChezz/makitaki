@@ -63,6 +63,18 @@ export type CalibrationStep = 'straight' | 'left' | 'right';
 
 export type Timbre = 'pad' | 'organ' | 'crystal';
 
+/** Filtro de imagen: solo cambia lo que se ve, no lo que analiza MediaPipe. */
+export type FilterId = 'neon' | 'summer' | 'natural' | 'bw';
+
+export interface RecordingResult {
+  blob: Blob;
+  mimeType: string;
+  fileName: string;
+  durationMs: number;
+  /** `false` si el micrófono no estaba disponible o se negó el permiso. */
+  withVoice: boolean;
+}
+
 export interface ChordSound {
   gesture: ChordGesture;
   /** Números MIDI en orden bajo · voz 1 · voz 2 · voz 3 (cada voz sigue su nota anterior). */
@@ -99,4 +111,9 @@ export interface AppEvents {
   timbreChanged: { timbre: Timbre };
   /** Muestra FPS y códigos de dedos para ajustar los valores "inicial". */
   diagnosticsChanged: { enabled: boolean };
+  filterChanged: { filter: FilterId };
+  guideVisibilityChanged: { visible: boolean };
+  /** Mientras se graba, el canvas también dibuja los paneles para que salgan en el video. */
+  recordingChanged: { recording: boolean; withVoice: boolean };
+  recordingReady: RecordingResult;
 }

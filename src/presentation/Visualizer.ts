@@ -1,7 +1,9 @@
 import type { EventBus } from '../core/EventBus';
-import type { AppEvents, DetectedHand } from '../core/types';
+import type { AppEvents, DetectedHand, FilterId } from '../core/types';
 import { fingerStates, toMetric } from '../gestures/HandGeometry';
 import { coverFit, toScreen } from './coverFit';
+import { FILTERS } from './filters';
+import { Hud } from './hud';
 import { Particles } from './particles';
 import { Ring } from './ring';
 
@@ -16,7 +18,6 @@ const CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
 
 // Colores "Neón nocturno" (sección 10.1).
 const COLORS = {
-  scrim: 'rgba(11, 14, 20, 0.35)',
   line: '#00C2B5',
   point: '#8CF5EE',
   text: '#F2F7FF',
@@ -42,6 +43,9 @@ export class Visualizer {
   private hands: TrackedHand[] = [];
   private ring = new Ring();
   private particles = new Particles();
+  private hud: Hud;
+  private filter: FilterId = 'neon';
+  private recording = false;
   private level = 0;
   private frameTimes: number[] = [];
   private dpr = 1;
@@ -57,7 +61,10 @@ export class Visualizer {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas 2D no disponible');
     this.ctx = ctx;
+    this.hud = new Hud(bus);
     bus.on('cameraReady', ({ video }) => (this.video = video));
+    bus.on('filterChanged', ({ filter }) => (this.filter = filter));
+    bus.on('recordingChanged', ({ recording }) => (this.recording = recording));
     bus.on('trackerReady', ({ delegate }) => (this.delegate = delegate));
     // Promedio móvil para que el número no salte en cada fotograma.
     bus.on('trackerStats', ({ detectMs }) => (this.detectMs = this.detectMs * 0.9 + detectMs * 0.1));
@@ -116,9 +123,8 @@ export class Visualizer {
     ctx.scale(-1, 1);
     ctx.drawImage(video, rect.x, rect.y, rect.width, rect.height);
     ctx.restore();
-    // Oscurece un poco el video para que resalten el anillo y las manos.
-    ctx.fillStyle = COLORS.scrim;
-    ctx.fillRect(0, 0, w, h);
+    // El filtro va sobre el video y debajo del anillo y las manos.
+    FILTERS[this.filter].apply(ctx, w, h);
 
     this.ring.draw(ctx, w, h, dpr, dtMs);
     const tips: { x: number; y: number }[] = [];
@@ -129,6 +135,8 @@ export class Visualizer {
     }
     this.particles.emit(tips, 4 + 26 * this.level, dtMs, dpr);
     this.particles.draw(ctx, dtMs);
+    // Al grabar, los paneles se dibujan aquí para que salgan en el video.
+    if (this.recording) this.hud.draw(ctx, w, h, dpr);
     if (this.diagnostics) this.drawDiagnostics();
   }
 

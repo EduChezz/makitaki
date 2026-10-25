@@ -1,8 +1,9 @@
 import type { EventBus } from '../core/EventBus';
-import type { AppEvents, Timbre } from '../core/types';
+import type { AppEvents, FilterId, Timbre } from '../core/types';
 import { TIMBRES } from '../audio/SynthEngine';
 import type { KeyValueStorage } from '../gestures/Calibration';
 import { KEYS } from '../music/MusicTheory';
+import { FILTERS, FILTER_IDS } from '../presentation/filters';
 import type { CalibrationScreen } from './CalibrationScreen';
 import { byId } from './dom';
 import { hintMessage } from './hint';
@@ -49,10 +50,18 @@ export class UI {
   private setupSelectors(): void {
     const key = byId<HTMLSelectElement>('key-select');
     const timbre = byId<HTMLSelectElement>('timbre-select');
+    const filter = byId<HTMLSelectElement>('filter-select');
     key.replaceChildren(...KEYS.map((k, i) => new Option(k.name, String(i), false, i === this.prefs.keyIndex)));
     timbre.replaceChildren(
       ...Object.entries(TIMBRES).map(([id, spec]) => new Option(spec.label, id, false, id === this.prefs.timbre)),
     );
+    filter.replaceChildren(
+      ...FILTER_IDS.map((id) => new Option(FILTERS[id].label, id, false, id === this.prefs.filter)),
+    );
+    filter.addEventListener('change', () => {
+      this.save({ filter: filter.value as FilterId });
+      this.bus.emit('filterChanged', { filter: this.prefs.filter });
+    });
     key.addEventListener('change', () => {
       this.save({ keyIndex: Number(key.value) });
       this.bus.emit('keyChanged', { keyIndex: this.prefs.keyIndex });
@@ -64,6 +73,7 @@ export class UI {
     // Los demás módulos arrancan con los valores guardados.
     this.bus.emit('keyChanged', { keyIndex: this.prefs.keyIndex });
     this.bus.emit('timbreChanged', { timbre: this.prefs.timbre });
+    this.bus.emit('filterChanged', { filter: this.prefs.filter });
 
     // En celular los selectores viven dentro del menú (sección 10.1).
     const selectors = byId('selectors');
@@ -109,6 +119,7 @@ export class UI {
     const visible = this.isGuideVisible();
     byId('guide').hidden = !visible;
     byId('guide-toggle').setAttribute('aria-pressed', String(visible));
+    this.bus.emit('guideVisibilityChanged', { visible });
   }
 
   private setupDialogs(): void {

@@ -8,6 +8,8 @@ import { GestureVoter } from './gestures/GestureVoter';
 import { CameraManager } from './input/CameraManager';
 import { MusicTheory } from './music/MusicTheory';
 import { Visualizer } from './presentation/Visualizer';
+import { Recorder } from './recording/Recorder';
+import { RecordingControls } from './ui/RecordingControls';
 import { CalibrationScreen } from './ui/CalibrationScreen';
 import { ChordPanel } from './ui/ChordPanel';
 import { byId } from './ui/dom';
@@ -27,7 +29,9 @@ new GestureVoter(bus, calibration.current);
 new ExpressionReader(bus, calibration.current);
 new MusicTheory(bus);
 const synth = new SynthEngine(bus);
-const visualizer = new Visualizer(bus, byId<HTMLCanvasElement>('stage'));
+const stage = byId<HTMLCanvasElement>('stage');
+const visualizer = new Visualizer(bus, stage);
+new RecordingControls(bus, new Recorder(bus, stage, synth));
 const startScreen = new StartScreen(bus, byId('start'), byId<HTMLButtonElement>('start-button'), byId('start-status'));
 const calibrationScreen = new CalibrationScreen(bus, calibration, {
   root: byId('calibration'),

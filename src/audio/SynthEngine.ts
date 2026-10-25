@@ -12,6 +12,8 @@ export const SYNTH = {
   voiceGain: 0.22,
   /** Tiempo de respuesta del volumen y el filtro, para que no haya clics. */
   smoothingS: 0.03,
+  /** Volumen de la voz en la grabación respecto al instrumento. */
+  voiceRecordGain: 1.2,
 };
 
 interface TimbreSpec {
@@ -102,6 +104,8 @@ export class SynthEngine {
   private timbre: Timbre = 'pad';
   private sounding = false;
   private silentSince = -Infinity;
+  private recordDest: MediaStreamAudioDestinationNode | null = null;
+  private voice: { source: MediaStreamAudioSourceNode; gain: GainNode } | null = null;
 
   constructor(private bus: EventBus<AppEvents>) {
     bus.on('chordChanged', ({ chord }) => this.onChord(chord));
@@ -132,6 +136,35 @@ export class SynthEngine {
     this.voices = Array.from({ length: 4 }, () => new Voice(ctx, this.filter));
     this.setTimbre(this.timbre);
     void ctx.resume();
+  }
+
+  /** Audio para grabar: el instrumento (después del volumen) más la voz, si se agrega. */
+  recordingStream(): MediaStream {
+    if (!this.ctx) throw new Error('El audio todavía no está activo');
+    if (!this.recordDest) {
+      this.recordDest = new MediaStreamAudioDestinationNode(this.ctx);
+      this.master.connect(this.recordDest);
+    }
+    return this.recordDest.stream;
+  }
+
+  /**
+   * Mezcla el micrófono en la grabación. No va a los parlantes: escucharse con
+   * retraso mientras se canta confunde y además provocaría acople.
+   */
+  attachVoice(mic: MediaStream): void {
+    if (!this.ctx || !this.recordDest) return;
+    this.detachVoice();
+    const source = new MediaStreamAudioSourceNode(this.ctx, { mediaStream: mic });
+    const gain = new GainNode(this.ctx, { gain: SYNTH.voiceRecordGain });
+    source.connect(gain).connect(this.recordDest);
+    this.voice = { source, gain };
+  }
+
+  detachVoice(): void {
+    this.voice?.source.disconnect();
+    this.voice?.gain.disconnect();
+    this.voice = null;
   }
 
   private setTimbre(timbre: Timbre): void {
