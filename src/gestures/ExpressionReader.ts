@@ -12,11 +12,27 @@ import { clamp, tiltToT } from './tilt';
  */
 export const EXPRESSION = { smoothingMs: 93 }; // inicial
 
-/** Altura de la muñeca (0 arriba, 1 abajo) → volumen 0 a 1 (sección 8.4). */
+/**
+ * Curva de volumen de la mano derecha. Cambia la del SDD (sección 8.4), que con
+ * la mano a media altura daba solo 25 %: al poner las manos ya se oye bien y
+ * desde ahí sube al levantar la mano. Valores "inicial".
+ */
+export const VOLUME_CURVE = {
+  /** Volumen con la mano derecha visible pero abajo. */
+  min: 0.35,
+  /** Altura de la muñeca (0 arriba, 1 abajo) donde empieza a subir y donde llega al máximo. */
+  bottom: 0.85,
+  top: 0.25,
+  /** Mayor que 1 = sube más suave al principio, más natural al oído. */
+  exponent: 1.5,
+};
+
+/** Altura de la muñeca (0 arriba, 1 abajo) → volumen entre `min` y 1. */
 export function volumeFromHeight(y: number): number {
-  // Se limita antes de elevar al cuadrado: si no, una mano muy abajo daría volumen alto.
-  const level = clamp((0.9 - y) / 0.8, 0, 1);
-  return level * level;
+  const { min, bottom, top, exponent } = VOLUME_CURVE;
+  // Se limita antes de la curva: fuera del rango no se dispara.
+  const level = clamp((bottom - y) / (bottom - top), 0, 1);
+  return min + (1 - min) * level ** exponent;
 }
 
 /** Acerca `previous` a `target` según el tiempo transcurrido. */

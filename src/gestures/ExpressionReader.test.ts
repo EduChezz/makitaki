@@ -2,20 +2,30 @@ import { describe, expect, it } from 'vitest';
 import { EventBus } from '../core/EventBus';
 import type { AppEvents, DetectedHand } from '../core/types';
 import { DEFAULT_CALIBRATION } from './Calibration';
-import { EXPRESSION, ExpressionReader, smoothToward, volumeFromHeight } from './ExpressionReader';
+import { EXPRESSION, ExpressionReader, VOLUME_CURVE, smoothToward, volumeFromHeight } from './ExpressionReader';
 import { makeFrame, makeHand } from './testHands';
 
 describe('volumeFromHeight', () => {
-  it('arriba = 1, abajo = 0, a media altura suena suave', () => {
-    expect(volumeFromHeight(0.1)).toBeCloseTo(1);
-    expect(volumeFromHeight(0.9)).toBeCloseTo(0);
-    expect(volumeFromHeight(0.5)).toBeCloseTo(0.25);
+  it('con la mano abajo ya se oye y arriba llega al máximo', () => {
+    expect(volumeFromHeight(0.85)).toBeCloseTo(VOLUME_CURVE.min);
+    expect(volumeFromHeight(0.25)).toBeCloseTo(1);
+  });
+
+  it('a media altura suena claro, no apenas un 25 %', () => {
+    expect(volumeFromHeight(0.5)).toBeGreaterThan(0.6);
+    expect(volumeFromHeight(0.5)).toBeLessThan(0.7);
+  });
+
+  it('siempre sube al levantar la mano', () => {
+    for (let y = 0.9; y > 0.2; y -= 0.05) {
+      expect(volumeFromHeight(y - 0.05)).toBeGreaterThanOrEqual(volumeFromHeight(y));
+    }
   });
 
   it('fuera del rango no se dispara', () => {
     expect(volumeFromHeight(0)).toBe(1);
-    expect(volumeFromHeight(0.98)).toBe(0);
-    expect(volumeFromHeight(1.5)).toBe(0);
+    expect(volumeFromHeight(0.98)).toBeCloseTo(VOLUME_CURVE.min);
+    expect(volumeFromHeight(1.5)).toBeCloseTo(VOLUME_CURVE.min);
   });
 });
 
@@ -49,8 +59,11 @@ describe('ExpressionReader', () => {
 
   it('mano derecha arriba sube el volumen y sin mano baja a 0', () => {
     const { play } = setup();
-    // La muñeca a 0,3 de altura → volumen ((0,9 − 0,3) / 0,8)² ≈ 0,56.
-    expect(play([makeHand('Right', '01000', { wrist: [0.3, 0.3] })], 30).volume).toBeCloseTo(0.5625, 2);
+    const wristY = 0.3;
+    expect(play([makeHand('Right', '01000', { wrist: [0.3, wristY] })], 30).volume).toBeCloseTo(
+      volumeFromHeight(wristY),
+      2,
+    );
     expect(play([], 30).volume).toBeLessThan(0.01);
   });
 
